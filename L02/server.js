@@ -4,6 +4,8 @@ import { OpenAI} from 'openai';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from "fs";
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Initialize Express server
 const app = express();
@@ -46,6 +48,8 @@ async function getFunctions() {
 // Route to interact with OpenAI API
 app.post('/execute-function', async (req, res) => {
     const { functionName, parameters } = req.body;
+    console.log(`${JSON.stringify(req.body)}`);
+    console.log(`${Object.values(parameters)}`);
 
     // Import all functions
     const functions = await getFunctions();
@@ -56,7 +60,8 @@ app.post('/execute-function', async (req, res) => {
 
     try {
         // Call the function
-        const result = await functions[functionName].execute(...Object.values(parameters));
+        // const result = await functions[functionName].execute(...Object.values(parameters));
+        const result = await functions[functionName].execute(parameters);
         console.log(`result: ${JSON.stringify(result)}`);
         res.json(result);
     } catch (err) {
